@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/src"/>
+	<classpathentry kind="src" output="tools/maven/maven-openspaces-plugin/target/classes" path="tools/maven/maven-openspaces-plugin/src/main/java"/>
+	<classpathentry kind="src" output="target/sandbox-classes" path="src/sandbox/src"/>
+	<classpathentry kind="src" output="target/sandbox-test-classes" path="src/sandbox/test"/>
+	<classpathentry kind="src" output="target/main-test-classes" path="src/main/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gigaspaces"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="lib/platform/ant/ant-junit.jar"/>
+	<classpathentry kind="lib" path="lib/platform/ant/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lib/platform/ant/ant-trax.jar"/>
+	<classpathentry kind="lib" path="lib/platform/ant/ant.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jpa/openjpa-all-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jdbc/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/activation.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/connector.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/ejb.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/jms.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/jstl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/platform/jee/jta.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/mail.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/rowset.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jee/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jmx/jmxri.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jruby/jruby.jar"/>
+	<classpathentry kind="lib" path="lib/platform/velocity/velocity-dep-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/external/antlr/antlr-2.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/external/asm/asm-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/external/asm/asm-commons-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/external/asm/asm-util-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/external/atomikos/atomikos-util.jar"/>
+	<classpathentry kind="lib" path="lib/external/atomikos/transactions-api.jar"/>
+	<classpathentry kind="lib" path="lib/external/atomikos/transactions-jta.jar"/>
+	<classpathentry kind="lib" path="lib/external/atomikos/transactions.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-dbcp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/external/common/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-math-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-pool-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/external/dom4j/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/external/hibernate/hibernate3.jar"/>
+	<classpathentry kind="lib" path="lib/external/javassist/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/external/jbossts/concurrent.jar"/>
+	<classpathentry kind="lib" path="lib/external/jbossts/jbossjts.jar"/>
+	<classpathentry kind="lib" path="lib/external/jbossts/jbossts-common.jar"/>
+	<classpathentry kind="lib" path="lib/external/jmock/jmock-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/external/jmock/jmock-cglib-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/external/jotm/howl.jar"/>
+	<classpathentry kind="lib" path="lib/external/jotm/jotm_jrmp_stubs.jar"/>
+	<classpathentry kind="lib" path="lib/external/jotm/jotm.jar"/>
+	<classpathentry kind="lib" path="lib/external/jotm/ow_carol.jar"/>
+	<classpathentry kind="lib" path="lib/external/jotm/xapool.jar"/>
+	<classpathentry kind="lib" path="lib/external/jsr223/js.jar"/>
+	<classpathentry kind="lib" path="lib/external/jsr223/script-api.jar"/>
+	<classpathentry kind="lib" path="lib/external/jsr223/script-js.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/external/junit/junit.jar"/>
+	<classpathentry kind="lib" path="lib/external/maven/maven-dependency-tree-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/external/backport/backport-util-concurrent.jar"/>
+	<classpathentry kind="lib" path="tools/groovy/embeddable/groovy-all-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/com.springsource.org.aopalliance-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.aop-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.asm-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.aspects-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.beans-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.context-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.core-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.expression-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/required/org.springframework.transaction-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/external/spring/org.springframework.test-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/com.springsource.javax.annotation-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/com.springsource.net.sf.cglib-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/org.springframework.jms-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/org.springframework.orm-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/spring/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-http-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-io-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-jmx-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-jndi-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-plus-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-policy-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-rewrite-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-security-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-server-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-servlet-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-servlets-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-util-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-webapp-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/jetty-xml-7.4.5.v20110725.jar"/>
+	<classpathentry kind="lib" path="lib/platform/jetty/servlet-api-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/optional/security/spring-security-core-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/external/spymemcached/memcached-2.5.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-artifact-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-core-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-plugin-api-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-settings-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-settings-builder-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-aether-provider-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-compat-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-embedder-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-model-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-model-builder-3.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/maven/apache-maven-3.0.2/lib/maven-repository-metadata-3.0.2.jar"/>
+	<classpathentry kind="lib" path="deploy/templates/memcached/lib/netty-3.2.4.Final.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/external/common/commons-io-2.0.1.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+
+<project name="openspaces" default="usage" basedir=".">
+
+    <property file="project.properties"/>
+    <property file="build.properties"/>
+	<property environment="env"/>
+
+	<condition property="mvn.executable" value="mvn.bat">
+            <os family="windows" />
+    </condition>
+
+    <condition property="mvn.executable" value="mvn">
+            <os family="unix" />
+    </condition>
+	
+    <path id="all-libs">
+
+        <fileset dir="${basedir}/deploy">
+            <include name="**/*.jar"/>
+        </fileset>
+		<!-- OpenJPA jars must come prior to ejb jars in classpath list, otherwise jpa classes 
+		will not compile due to interface PersistenceProvider conflict -->
+    	<fileset dir="${lib.dir}">
+            <include name="**/jpa/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+            <exclude name="required/gs-openspaces.jar"/>
+            <exclude name="optional/openspaces/**"/>
+            <exclude name="platform/openspaces/**"/>
+            <exclude name="ant/**"/>
+        </fileset>
+        <path path="${basedir}/tools/groovy/embeddable/groovy-all-1.8.0.jar" />
+    	<path path="${basedir}/../gigaspaces/classes" />
+        <path path="${basedir}/../gigaspaces/src/java/resources" />
+
+    </path>
+
+    <path id="tests-libs">
+
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+            <exclude name="platform/ant/*.jar"/>
+            <exclude name="platform/jetty/*.jar"/>
+            <exclude name="required/gs-openspaces.jar"/>
+            <exclude name="optional/openspaces/**"/>
+            <exclude name="platform/openspaces/**"/>
+            <exclude name="ant/**"/>
+        </fileset>
+    	<fileset dir="${deploy.templates.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    	<path path="${basedir}/tools/groovy/embeddable/groovy-all-1.8.0.jar" />
+        <path path="${basedir}/../gigaspaces" />
+    	<path path="${basedir}/../gigaspaces/classes" />
+        <path path="${basedir}/../gigaspaces/src/java/resources" />
+
+    </path>
+
+    <target name="usage">
+        <echo message=""/>
+        <echo message="OpenSpaces build script"/>
+        <echo message="-----------------------------------------"/>
+        <echo message=""/>
+        <echo message="Among the available targets are:"/>
+        <echo message=""/>
+        <echo message="clean    --> Cleans all output dirs"/>
+        <echo message="build    --> build all; don't create JARs"/>
+        <echo message="tests    --> run tests"/>
+        <echo message="dist     --> create a distribution"/>
+        <echo message=""/>
+    </target>
+
+    <target name="clean" description="Clean all output dirs (dist, javadocs, classes, test-classes, etc)">
+        <!-- Just kill target dir (it's safer). No need at this point to keep it. -->
+        <delete dir="${target.dir}"/>
+        <delete dir="${lib.dir}/${name}"/>
+    </target>
+
+    <!--
+    ########### COMPILE TARGETS ###########
+    -->
+
+    <target name="buildmain" description="Compile main source tree java files into class files">
+
+        <mkdir dir="${target.classes.dir}"/>
+        <mkdir dir="${target.classes.dir}/META-INF"/>
+
+        <javac  destdir="${target.classes.dir}" source="1.6" target="1.6" debug="${debug}"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="${main.src.dir}"/>
+            <classpath refid="all-libs"/>
+        </javac>
+
+        <copy todir="${target.classes.dir}" preservelastmodified="true">
+            <fileset dir="${main.src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.handlers"/>
+                <include name="**/*.schemas"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.dtd"/>
+                <include name="**/*.xsd"/>
+                <include name="**/*.groovy"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <target name="build_1_5" depends="clean, buildmain" description="Compile main sources"/>
+
+    <target name="fulljar_1_5" depends="build_1_5, fulljar"/>
+
+    <target name="fulljar" description="Create full JAR file with all OpenSpaces classes">
+
+        <mkdir dir="${target.classes.dir}" />
+        <mkdir dir="${lib.dir}/required"/>
+        <delete file="${lib.dir}/required/gs-openspaces.jar"/>
+
+        <jar jarfile="${lib.dir}/required/gs-openspaces.jar">
+            <fileset dir="${target.classes.dir}">
+                <include name="META-INF/**"/>
+                <include name="org/openspaces/**"/>
+            	<include name="org/apache/openjpa/**"/>
+                <exclude name="org/openspaces/pu/container/jee/jetty/holder/**"/>
+                <exclude name="org/openspaces/pu/container/jee/jetty/support/**"/>
+                <exclude name="org/apache/catalina/**"/>
+                <exclude name="com/sun/**"/>
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Title" value="${openspaces-title}"/>
+                <attribute name="Implementation-Version" value="${openspaces-version}"/>
+                <attribute name="OpenSpaces-Version" value="${openspaces-version}"/>
+            </manifest>
+        </jar>
+
+        <mkdir dir="${lib.dir}/optional/openspaces"/>
+
+        
+        <delete file="${lib.dir}/platform/openspaces/gs-openspaces-jetty.jar"/>
+        <jar jarfile="${lib.dir}/platform/openspaces/gs-openspaces-jetty.jar">
+            <fileset dir="${target.classes.dir}">
+                <include name="org/openspaces/pu/container/jee/jetty/holder/**"/>
+                <include name="org/openspaces/pu/container/jee/jetty/support/**"/>
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Title" value="${openspaces-title}"/>
+                <attribute name="Implementation-Version" value="${openspaces-version}"/>
+                <attribute name="OpenSpaces-Version" value="${openspaces-version}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="srczip" description="Create source ZIP (containing Java sources)">
+
+        <delete file="${lib.dir}/optional/openspaces/gs-openspaces-src.zip"/>
+
+        <zip zipfile="${lib.dir}/optional/openspaces/gs-openspaces-src.zip">
+            <fileset dir="${main.src.dir}">
+                <include name="org/openspaces/**"/>
+            </fileset>
+        </zip>
+
+    </target>
+
+    <!--
+        Generate javadoc for the main and JDK 1.5 sources.
+    -->
+    <target name="javadoc" description="Generate framework Javadocs">
+
+        <delete dir="${target.javadoc.dir}" failonerror="false"/>
+        <mkdir dir="${target.javadoc.dir}"/>
+
+        <javadoc sourcepath="${main.src.dir}" destdir="${target.javadoc.dir}" windowtitle="GigaSpaces XAP 8.0 API"
+                 source="1.6" access="protected" author="true" version="true" use="true"
+                 useexternalfile="yes"
+                 defaultexcludes="true"
+                 header='&lt;a href="index.html" target=\"_top\"&gt;GigaSpaces XAP 8.0 API&lt;/a&gt;'
+        		packagenames="org.openspaces.**.*"
+        		excludepackagenames="org.openspaces.admin.internal.**.*, org.openspaces.core.executor.internal.**.*, org.openspaces.core.internal.**.*, org.openspaces.core.transaction.internal.**.*">
+            <arg value="-breakiterator"/>
+            <arg value="-J-Xmx256m"/>
+            <arg value="-J-XX:MaxPermSize=256m"/>
+            <doctitle><![CDATA[<h1>GigaSpaces XAP 8.0 API</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &copy; <a href="http://www.gigaspaces.com/" target="_top">GigaSpaces</a>.</i>]]></bottom>
+            <classpath refid="all-libs"/>
+        	<fileset dir="${basedir}/../gigaspaces/src/java" defaultexcludes="yes">
+	      		<include name="com/**"/>
+				<exclude name="com/j_spaces/jms/**" />
+				<contains text="JAVA-DOC-STAMP"/>
+		    </fileset>
+        	<fileset dir="${basedir}/../gigaspaces/src/java" defaultexcludes="yes">
+	      		<include name="com/sun/**/*.java"/>
+        		<include name="net/**/*.java"/>
+		    </fileset>
+            <link href="http://download.oracle.com/javase/1,5.0/docs/api/"/>
+        	<link href="http://www.gigaspaces.com/docs/JiniApi"/>
+            <link href="http://static.springframework.org/spring/docs/2.5.x/api"/>
+            <link href="http://aopalliance.sourceforge.net/doc"/>
+            <!-- Caucho Burlap/Hessian -->
+            <link href="http://cglib.sourceforge.net/apidocs"/>
+            <link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
+            <link href="http://jakarta.apache.org/commons/pool/apidocs/"/>
+        </javadoc>
+
+    </target>
+
+    <target name="schema" description="Copy over schema files">
+        <delete dir="lib/optional/openspaces/schema"/>
+    	<mkdir dir="lib/optional/openspaces/schema"/>
+        <copy todir="lib/optional/openspaces/schema" flatten="true">
+            <fileset dir="${main.src.dir}">
+                <include name="**/*.xsd"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="license" description="Copy over license files">
+    	<mkdir dir="lib/optional/openspaces"/>
+        <copy todir="lib/optional/openspaces" file="${basedir}/openspaces.license.txt"/>
+        <copy todir="lib/optional/openspaces" file="${basedir}/openspaces.notice.txt"/>
+    </target>
+
+    <target name="dist_1_5"
+            depends="build_1_5, fulljar, install.maven, srczip, javadoc, schema, license"
+            description="Creates the OpenSpaces distribution">
+        <mkdir dir="${dist.dir}"/>
+        <delete file="${dist.dir}/${name}-1.5.zip"/>
+        <zip zipfile="${dist.dir}/${name}-1.5.zip">
+            <zipfileset dir="${basedir}">
+                <include name="bin/pu*"/>
+                <include name="bin/gs-m*"/>
+                <include name="deploy/**"/>
+                <include name="docs/**"/>
+                <include name="tools/**"/>
+            	<exclude name="tools/maven/maven-openspaces-plugin/target/**" />
+                <exclude name="tools/**/*.iml" />
+                <exclude name="tools/gshell/**" />
+
+                <include name="lib/required/**"/>
+                <include name="lib/optional/openspaces/**"/>
+                <include name="lib/optional/spring/**"/>
+                <include name="lib/optional/security/**"/>
+                <include name="lib/platform/openspaces/**" />
+                <include name="lib/platform/jee/activation.jar" />
+                <include name="lib/platform/jee/jta.jar" />
+                <include name="lib/platform/jee/connector.jar" />
+                <include name="lib/platform/jetty/**" />
+                <include name="lib/platform/velocity/**" />
+            	<include name="lib/platform/jpa/**" />
+            </zipfileset>
+        	<zipfileset dir="${lib.dir}/external/common" includes="commons-logging.jar" prefix="lib/required">
+        	</zipfileset>
+        </zip>
+    </target>
+	
+	<target name="install.maven" if="productversion">
+		<property name="maven.tmp.dir" value="${basedir}/maven.tmp.dir" />
+	 	<java classname="org.openspaces.maven.support.POMGenerator" fork="true">
+	 		<arg value="${maven.tmp.dir}"/>
+	 		<arg value="${productversion}"/>
+	 		<classpath refid="all-libs"/>
+            <classpath location="${target.classes.dir}"/>
+	 	</java>	
+		<replaceregexp file="${maven.tmp.dir}/gs-openspaces-pom.xml" 
+             match="&lt;version&gt;${productversion}-(.*)&lt;/version&gt;"
+             replace="&lt;version&gt;${productversion}&lt;/version&gt;"/>
+		<echo message="${productversion}" />
+    	<!-- Install newly created jar in local maven repository -->
+		<exec executable="${env.M2_HOME}\bin\${mvn.executable}"> 
+			<arg line="install:install-file -DgroupId=com.gigaspaces -DartifactId=gs-openspaces -Dversion=${productversion} -Dpackaging=jar -DpomFile=${maven.tmp.dir}/gs-openspaces-pom.xml -Dfile=${lib.dir}/required/gs-openspaces.jar"/>
+		</exec>
+		<delete dir="${maven.tmp.dir}"/>
+	</target>
+
+    <target name="dist">
+        <antcall target="dist_1_5"/>
+        <!--antcall target="dist_1_4"/-->
+    </target>
+
+    <target name="install_1_5" depends="dist_1_5">
+        <unzip src="${dist.dir}/${name}-1.5.zip" dest="${gshome.dir}"/>
+    </target>
+
+
+    <!--
+    ########### TEST TARGETS ###########
+    -->
+
+    <!--
+         Compile the main test tree.
+     -->
+    <target name="buildmaintests" depends="build_1_5"
+            description="Compile test source tree java files into class files">
+
+        <mkdir dir="${target.testclasses.dir}"/>
+
+        <javac destdir="${target.testclasses.dir}" source="1.6" target="1.6" debug="${debug}"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="${main.test.dir}"/>
+            <classpath refid="all-libs"/>
+            <classpath location="${target.classes.dir}"/>
+        </javac>
+
+        <!-- Pick up config files from test directory -->
+        <copy todir="${target.testclasses.dir}" preservelastmodified="true">
+            <fileset dir="${main.test.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+
+    <target name="buildtests" depends="buildmaintests" description="Compile main test sources"/>
+
+
+    <target name="maintests" depends="buildtests" description="Run main tests">
+
+        <mkdir dir="${target.junit.reports.dir}"/>
+
+        <junit forkmode="${junit.forkmode}" printsummary="yes" haltonfailure="yes" haltonerror="yes">
+
+            <jvmarg line="-Djava.security.policy=policy/policy.all -Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=128m"/>
+
+            <classpath location="${target.testclasses.dir}"/>
+            <classpath location="${target.classes.dir}"/>
+
+            <!-- Need files loaded as resources -->
+            <classpath location="${main.test.dir}"/>
+        	<classpath location="${deploy.templates.dir}"/>
+
+            <classpath refid="tests-libs"/>
+
+            <formatter type="plain" usefile="false"/>
+
+            <batchtest fork="yes" todir="${target.junit.reports.dir}">
+                <fileset dir="${target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
+            </batchtest>
+
+        </junit>
+
+    </target>
+
+
+    <target name="tests" depends="maintests" description="Run tests"/>
+
+
+    <!--
+         Run test suite and generate test summary, for both main and sandbox tests.
+         Does not halt on failure or error, in contrast to the "tests" target above.
+     -->
+    <target name="testsummary" depends="buildtests" description="Run tests and generate test summary">
+
+        <mkdir dir="${target.junit.reports.dir}"/>
+        <mkdir dir="${target.junit.summary.dir}"/>
+
+        <junit failureproperty="junit.tests.failed" errorproperty="junit.tests.error" forkmode="${junit.forkmode}" printsummary="yes" haltonfailure="no" haltonerror="no">
+
+            <jvmarg line="-Djava.security.policy=policy/policy.all -Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=128m"/>
+
+            <!-- Must go first to ensure any jndi.properties files etc take precedence  -->
+            <classpath location="${target.testclasses.dir}"/>
+            <classpath location="${target.classes.dir}"/>
+
+            <!-- Need files loaded as resources -->
+            <classpath location="${main.test.dir}"/>
+    		<classpath location="${deploy.templates.dir}"/> 
+            	
+            <classpath refid="tests-libs"/>
+
+            <formatter type="plain" usefile="false"/>
+            <formatter type="xml"/>
+
+            <batchtest fork="yes" todir="${target.junit.reports.dir}">
+                <fileset dir="${target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
+            </batchtest>
+
+        </junit>
+
+        <junitreport todir="${target.junit.reports.dir}">
+            <fileset dir="${target.junit.reports.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${target.junit.summary.dir}"/>
+        </junitreport>
+    	
+    	<ant target="create.dummy.file.if.tests.failed"/> 
+    	<ant target="create.dummy.file.if.error.in.tests"/>
+    	<!--fail if="junit.tests.failed" message="JUnit tests failed. exiting..."/-->
+
+    </target>
+	
+	<target name="create.dummy.file.if.tests.failed" if="junit.tests.failed">
+		<touch file="${target.junit.reports.dir}/failed" />
+	</target>
+	
+	<target name="create.dummy.file.if.error.in.tests" if="junit.tests.error">
+		<touch file="${target.junit.reports.dir}/error" />
+	</target>
+		
+    <target name="clean_tests" depends="clean,tests"/>
+
+
+    <!-- SANDBOX -->
+
+    <target name="buildsandbox" description="Compile the sandbox source tree java files into class files">
+
+        <mkdir dir="${target.sandbox-classes.dir}"/>
+        <mkdir dir="${target.sandbox-classes.dir}/META-INF"/>
+
+        <javac destdir="${target.sandbox-classes.dir}" source="1.6" target="1.6" debug="${debug}"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="${sandbox.src.dir}"/>
+            <classpath refid="all-libs"/>
+        </javac>
+
+        <copy todir="${target.sandbox-classes.dir}" preservelastmodified="true">
+            <fileset dir="${main.src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.handlers"/>
+                <include name="**/*.schemas"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.dtd"/>
+                <include name="**/*.xsd"/>
+                <include name="**/*.groovy"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="sandboxjar" description="Create full sandbox JAR file with all OpenSpaces classes"
+            depends="buildsandbox">
+
+        <mkdir dir="${lib.dir}/${name}"/>
+        <delete file="${lib.dir}/${name}/${name}-sandbox.jar"/>
+
+        <jar jarfile="${lib.dir}/${name}/${name}-sandbox.jar">
+            <fileset dir="${target.sandbox-classes.dir}">
+                <include name="META-INF/**"/>
+                <include name="org/openspaces/**"/>
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Title" value="${openspaces-title}"/>
+                <attribute name="Implementation-Version" value="${openspaces-version}"/>
+                <attribute name="OpenSpaces-Version" value="${openspaces-version}"/>
+            </manifest>
+        </jar>
+
+    </target>
+
+    <target name="agentjar" description="Create agent JAR file with all OpenSpaces classes" depends="buildsandbox">
+
+        <mkdir dir="${lib.dir}/${name}"/>
+        <delete file="${lib.dir}/${name}/${name}-agent.jar"/>
+
+        <jar jarfile="${lib.dir}/${name}/${name}-agent.jar">
+            <fileset dir="${target.sandbox-classes.dir}">
+                <include name="org/openspaces/enhancer/**"/>
+                <include name="org/openspaces/libraries/asm/**"/>
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Title" value="${openspaces-title}"/>
+                <attribute name="Implementation-Version" value="${openspaces-version}"/>
+                <attribute name="OpenSpaces-Version" value="${openspaces-version}"/>
+                <attribute name="Premain-Class" value="org.openspaces.enhancer.EnhancerAgent"/>
+            </manifest>
+        </jar>
+
+    </target>
+
+
+</project>
